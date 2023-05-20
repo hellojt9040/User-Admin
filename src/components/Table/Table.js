@@ -7,17 +7,20 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-const BasicTable = ({ rowData, tableData }) => {
+const BasicTable = ({ columnData, tableData }) => {
+  debugger;
   return (
     <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table" stickyHeader>
         <TableHead>
           <TableRow>
-            {rowData?.map((row) => (
-              <TableCell key={row} align="right">
-                {row}
-              </TableCell>
-            ))}
+            {columnData?.map((row) => {
+              return (
+                <TableCell key={row.header} align="left">
+                  <div>{row.rendrer ? row.rendrer : row.header}</div>
+                </TableCell>
+              );
+            })}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -27,8 +30,10 @@ const BasicTable = ({ rowData, tableData }) => {
                 key={row.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
-                {rowData.map((rowName) => (
-                  <TableCell align="right">{row[rowName]}</TableCell>
+                {columnData.map((column) => (
+                  // <TableCell align="left" key={column.header}>
+                  <div>{row[column.header?.toLowerCase()]}</div>
+                  // </TableCell>
                 ))}
               </TableRow>
             );
@@ -37,6 +42,6 @@ const BasicTable = ({ rowData, tableData }) => {
       </Table>
     </TableContainer>
   );
-}
+};
 
 export default BasicTable;
