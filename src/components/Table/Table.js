@@ -6,42 +6,63 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import PropTypes from 'prop-types';
+import './Table.scss';
 
-const BasicTable = ({ columnData, tableData }) => {
+const BasicTable = ({ columnData, tableData, classes }) => {
   debugger;
   return (
-    <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table" stickyHeader>
-        <TableHead>
-          <TableRow>
-            {columnData?.map((row) => {
+    <div className={`Table ${classes}`}>
+      <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table" stickyHeader>
+          <TableHead>
+            <TableRow>
+              {columnData?.map((row) => {
+                return (
+                  <TableCell
+                    key={row.header}
+                    align="left"
+                    className="Table__headerName"
+                  >
+                    {row.headerRenderer ? row.headerRenderer : row.header}
+                  </TableCell>
+                );
+              })}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tableData?.map((row) => {
               return (
-                <TableCell key={row.header} align="left">
-                  <div>{row.rendrer ? row.rendrer : row.header}</div>
-                </TableCell>
+                <TableRow
+                  key={row.id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  {columnData.map((column) => (
+                    <TableCell align="left" key={column.header}>
+                      {column.renderer
+                        ? column.renderer
+                        : row[column.header?.toLowerCase()]}
+                      {/* {row[column.header?.toLowerCase()]} */}
+                    </TableCell>
+                  ))}
+                </TableRow>
               );
             })}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {tableData?.map((row) => {
-            return (
-              <TableRow
-                key={row.id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                {columnData.map((column) => (
-                  // <TableCell align="left" key={column.header}>
-                  <div>{row[column.header?.toLowerCase()]}</div>
-                  // </TableCell>
-                ))}
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
   );
+};
+
+BasicTable.defaultProps = {
+  classes: '',
+};
+
+BasicTable.propTypes = {
+  classes: PropTypes.string,
+  columnData: PropTypes.array,
+  tableData: PropTypes.array,
 };
 
 export default BasicTable;
