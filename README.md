@@ -10,7 +10,9 @@ Modify, Remove and access Users details.
 
 ## Installation
 
-Instructions on how to install and run the project locally.
+`Open terminal on root dir`
+`npm install`
+`npm start`
 
 [Open my User Admin ⚡️](https://react-mn9gjh.stackblitz.io/)
 
