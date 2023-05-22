@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import useAdminData from './useAdminData';
 import Table from '../../components/Table';
 import UserAction from '../../components/UserAction';
+import Searchbar from '../../components/Searchbar';
 import Checkbox from '../../components/UI/form/Checkbox';
 import Pagination from '../../components/UI/Pagination';
 import Visible from '../../components/utils/Visible';
@@ -18,27 +19,20 @@ import './UserAdmin.scss';
 const UserAdmin = () => {
   const {
     users,
-    isFetching,
-    isFetched,
     error,
+    isFetched,
+    isFetching,
     updateUser,
     deleteUser,
-    currentPage,
-    pageChangeHandler,
     totalPages,
-    userSelectionHandler,
-    deleteMultipleUsers,
-    selectedUsers,
     allSelected,
+    currentPage,
+    selectedUsers,
+    pageChangeHandler,
+    deleteMultipleUsers,
+    userSelectionHandler,
+    filterUsersWithSearch,
   } = useAdminData();
-
-  // const updateExistingData = useCallback((data) => {
-  //   updateUser(data);
-  // }, [updateUser]);
-
-  // const deleteExistingData = useCallback((data) => {
-  //   updateUser(data);
-  // }, [updateUser]);
 
   const columnHeaders = COLUMN_HEADERS.map((column) => {
     const columnData = {
@@ -61,7 +55,6 @@ const UserAdmin = () => {
         />
       );
     } else if (column === '__actions') {
-      // columnData.renderer = <UserAction />;
       columnData.renderer = (props) =>
         renderer(UserAction, {
           ...props,
@@ -89,9 +82,19 @@ const UserAdmin = () => {
           open={isFetching}
         ></Backdrop>
         <Card>
+          <Searchbar searchChangeHandler={filterUsersWithSearch} />
           <Visible when={isFetched}>
             <Visible when={!error}>
-              <Visible when={!users?.length}>No Data Found</Visible>
+              <Visible when={!users?.length}>
+                <Typography
+                  variant="h5"
+                  align="center"
+                  component="h5"
+                  className="UserAdmin__alert"
+                >
+                  No Data Found !
+                </Typography>
+              </Visible>
               <Visible when={!!users?.length}>
                 <Table columnData={columnHeaders} tableData={users} />
               </Visible>
@@ -114,7 +117,7 @@ const UserAdmin = () => {
             justifyContent="space-between"
           >
             <div>
-              <Visible when={!!selectedUsers.length}>
+              <Visible when={!!selectedUsers?.length}>
                 <Button
                   variant="contained"
                   endIcon={<DeleteIcon />}

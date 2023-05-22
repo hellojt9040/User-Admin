@@ -1,4 +1,5 @@
 import React, { useReducer, useCallback, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import TextField from '../UI/form/TextField';
 import Typography from '@mui/material/Typography';
@@ -98,6 +99,17 @@ const EditUserForm = ({ userData, updateUser, closeEditModalHandler }) => {
       </div>
     </form>
   );
+};
+
+EditUserForm.propTypes = {
+  userData: PropTypes.shape({
+    email: PropTypes.string,
+    id: PropTypes.string,
+    name: PropTypes.string.isRequired,
+    role: PropTypes.string,
+  }),
+  updateUser: PropTypes.func.isRequired,
+  closeEditModalHandler: PropTypes.func.isRequired,
 };
 
 export default EditUserForm;

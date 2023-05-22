@@ -47,13 +47,6 @@ const BasicTable = ({ columnData, tableData, classes }) => {
                           })
                         : row[column.header?.toLowerCase()]}
                     </TableCell>
-
-                    // FIXME: ORG
-                    // <TableCell align="left" key={column.header}>
-                    //   {column.renderer
-                    //     ? column.renderer
-                    //     : row[column.header?.toLowerCase()]}
-                    // </TableCell>
                   ))}
                 </TableRow>
               );

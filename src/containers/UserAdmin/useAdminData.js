@@ -7,6 +7,7 @@ import {
 } from '../../constants/constants';
 
 const useAdminData = () => {
+  const [__users, __setUsers] = useState();
   const [users, setUsers] = useState();
   const [isFetching, setFetching] = useState(false);
   const [isFetched, setFetched] = useState(false);
@@ -24,14 +25,8 @@ const useAdminData = () => {
   const allSelected =
     JSON.stringify(selectedUsers) ===
     JSON.stringify(paginatedUsers?.map((user) => user.id));
-  // const allSelected =
-  //   JSON.stringify(selectedUsersToDeleteRef.current) ===
-  //   JSON.stringify(paginatedUsers?.map((user) => user.id));
-  console.log('allSelected', allSelected);
-  console.log('selectedUsers', selectedUsers);
 
-  const pageChangeHandler = (e, page) => {
-    console.log('page...', page);
+  const pageChangeHandler = (_, page) => {
     setCurrentPage(page);
     setSelectedUsers([]);
   };
@@ -40,12 +35,10 @@ const useAdminData = () => {
     (userData) => {
       if (users?.length) {
         const foundIndex = users.findIndex((user) => user.id === userData.id);
-        debugger;
         const updatedUsers = [...users];
         updatedUsers.splice(foundIndex, 1, userData);
         setUsers(updatedUsers);
       }
-      console.log('users', users);
     },
     [users]
   );
@@ -57,27 +50,25 @@ const useAdminData = () => {
           (user) => user.id !== userData.id
         );
         setUsers(updatedUsers);
+        setSelectedUsers((prevUsers) =>
+          prevUsers.filter((userId) => userId !== userData.id)
+        );
       }
-      console.log('users', users);
     },
     [users]
   );
 
   const userSelectionHandler = useCallback(
     ({ id, isAllSelection, checked }) => {
-      debugger;
       let userIds = [...selectedUsers];
       if (Array.isArray(userIds)) {
         if (checked) {
           if (isAllSelection) {
-            // userIds = paginatedUsers?.map((user) => user.id);
             setSelectedUsers(paginatedUsers?.map((user) => user.id));
           } else if (id) {
-            // userIds.push(id);
             setSelectedUsers((prevUsers) => [...prevUsers, id]);
           }
         } else {
-          // userIds = userIds.filter((userId) => userId !== id);
           if (isAllSelection) {
             setSelectedUsers([]);
           } else if (id) {
@@ -87,8 +78,6 @@ const useAdminData = () => {
           }
         }
       }
-      // console.log(userIds);
-      // setSelectedUsers(userIds);
     },
     [paginatedUsers]
   );
@@ -97,12 +86,22 @@ const useAdminData = () => {
     const userIds = selectedUsers;
     if (Array.isArray(userIds) && userIds.length && users?.length) {
       const updatedUsers = users.filter((user) => !userIds.includes(user.id));
-      debugger;
-      console.log(updatedUsers);
       setSelectedUsers([]);
       setUsers(updatedUsers);
     }
   };
+
+  const filterUsersWithSearch = useCallback(
+    (searchValue) => {
+      const filteredUsers = __users?.filter((user) =>
+        Object.values(user).some((value) =>
+          value.toString().includes(searchValue)
+        )
+      );
+      setUsers(filteredUsers);
+    },
+    [users]
+  );
 
   const usersLength = users?.length ?? 0;
   useEffect(() => {
@@ -124,10 +123,9 @@ const useAdminData = () => {
           throw new Error(data.error?.message || DEFAULT_ERROR);
         }
         setUsers(data);
+        __setUsers(data); // ONLY for master data, DO NOT USE anywhere else
         setTotalPages(Math.ceil((data?.length ?? 0) / ITEMS_PER_PAGE));
-        console.log('fetchUserDetails data...', data);
       } catch (error) {
-        console.log('fetchUserDetails error...', error);
         setError(error?.message || DEFAULT_ERROR);
       } finally {
         setFetching(false);
@@ -150,9 +148,9 @@ const useAdminData = () => {
     pageChangeHandler,
     userSelectionHandler,
     deleteMultipleUsers,
-    // selectedUsers: selectedUsersToDeleteRef.current,
     allSelected,
     selectedUsers: selectedUsers,
+    filterUsersWithSearch,
   };
 };
 

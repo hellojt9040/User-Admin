@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import Checkbox from '@mui/material/Checkbox';
 
 export default function CCheckbox({
-  isChecked,
   rowData,
+  isChecked,
+  selectedUsers,
   changeHandler,
   isAllSelection,
-  selectedUsers,
 }) {
   const [checked, setChecked] = useState(!!isChecked || false);
   const { id } = rowData;

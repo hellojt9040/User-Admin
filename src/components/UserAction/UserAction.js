@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Button from '@mui/material/Button';
+import PropTypes from 'prop-types';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import IconButton from '@mui/material/IconButton';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
@@ -45,6 +45,10 @@ const UserAction = ({ rowData, updateUser, deleteUser }) => {
           />
         </Modal>
       </Visible>
+      <IconButton aria-label="delete" onClick={openEditModalHandler}>
+        <ModeEditIcon />
+      </IconButton>
+
       {/* Delete */}
       <Visible when={showDeleteModal}>
         <Modal
@@ -59,15 +63,22 @@ const UserAction = ({ rowData, updateUser, deleteUser }) => {
           />
         </Modal>
       </Visible>
-
-      <IconButton aria-label="delete" onClick={openEditModalHandler}>
-        <ModeEditIcon />
-      </IconButton>
       <IconButton aria-label="delete" onClick={openDeleteModalHandler}>
         <DeleteIcon />
       </IconButton>
     </ButtonGroup>
   );
+};
+
+UserAction.propTypes = {
+  userData: PropTypes.shape({
+    email: PropTypes.string,
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    role: PropTypes.string,
+  }),
+  updateUser: PropTypes.func.isRequired,
+  deleteUser: PropTypes.func.isRequired,
 };
 
 export default UserAction;

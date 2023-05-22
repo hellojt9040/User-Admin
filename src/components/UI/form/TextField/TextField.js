@@ -4,14 +4,14 @@ import TextField from '@mui/material/TextField';
 
 export default function TextFields({
   id,
-  label,
-  placeholder,
   type,
+  label,
+  variant,
   validity,
   validator,
   isDisabled,
+  placeholder,
   defaultValue,
-  triggerValidation,
   changeHandler,
   initialValidation,
 }) {
@@ -46,9 +46,9 @@ export default function TextFields({
 
   return (
     <TextField
-      id="standard-basic"
+      id={id}
       label={label || ''}
-      variant="standard"
+      variant={variant}
       fullWidth
       placeholder={placeholder || ''}
       type={type}
@@ -62,7 +62,9 @@ export default function TextFields({
 }
 
 TextFields.defaultProps = {
+  id: 'standard-basic',
   type: 'text',
+  variant: 'standard',
   validity: false,
   isDisabled: false,
   defaultValue: '',
@@ -72,6 +74,7 @@ TextFields.defaultProps = {
 TextFields.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string,
+  variant: PropTypes.oneOf(['standard', 'filled', 'outlined']),
   placeholder: PropTypes.string,
   type: PropTypes.string,
   validity: PropTypes.bool,
