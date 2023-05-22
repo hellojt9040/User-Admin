@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -6,25 +7,26 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import PropTypes from 'prop-types';
 import './Table.scss';
 
 const BasicTable = ({ columnData, tableData, classes }) => {
   debugger;
   return (
     <div className={`Table ${classes}`}>
-      <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+      <TableContainer component={Paper} sx={{ maxHeight: 500 }}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table" stickyHeader>
           <TableHead>
             <TableRow>
-              {columnData?.map((row) => {
+              {columnData?.map((column) => {
                 return (
                   <TableCell
-                    key={row.header}
+                    key={column.header}
                     align="left"
                     className="Table__headerName"
                   >
-                    {row.headerRenderer ? row.headerRenderer : row.header}
+                    {column.headerRenderer
+                      ? column.headerRenderer
+                      : column.header}
                   </TableCell>
                 );
               })}
@@ -40,10 +42,18 @@ const BasicTable = ({ columnData, tableData, classes }) => {
                   {columnData.map((column) => (
                     <TableCell align="left" key={column.header}>
                       {column.renderer
-                        ? column.renderer
+                        ? column.renderer({
+                            rowData: row,
+                          })
                         : row[column.header?.toLowerCase()]}
-                      {/* {row[column.header?.toLowerCase()]} */}
                     </TableCell>
+
+                    // FIXME: ORG
+                    // <TableCell align="left" key={column.header}>
+                    //   {column.renderer
+                    //     ? column.renderer
+                    //     : row[column.header?.toLowerCase()]}
+                    // </TableCell>
                   ))}
                 </TableRow>
               );

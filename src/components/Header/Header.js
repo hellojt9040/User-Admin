@@ -1,12 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Typography from '@mui/material/Typography';
 import Toolbar from '@mui/material/Toolbar';
 import './Header.scss';
 
-const Header = ({ headerText }) => {
+const Header = ({ classes, headerText }) => {
   return (
-    <AppBar className="Header" position="static">
+    <AppBar className={`Header ${classes}`} position="static">
       <Toolbar>
         <Typography
           variant="h6"
@@ -19,6 +20,11 @@ const Header = ({ headerText }) => {
       </Toolbar>
     </AppBar>
   );
+};
+
+Header.propTypes = {
+  classes: PropTypes.string,
+  headerText: PropTypes.string,
 };
 
 export default Header;

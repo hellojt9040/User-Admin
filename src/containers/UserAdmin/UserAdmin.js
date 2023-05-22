@@ -3,32 +3,76 @@ import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
 import Backdrop from '@mui/material/Backdrop';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
 import useAdminData from './useAdminData';
 import Table from '../../components/Table';
 import UserAction from '../../components/UserAction';
-import Checkbox from '../../components/form/Checkbox';
+import Checkbox from '../../components/UI/form/Checkbox';
+import Pagination from '../../components/UI/Pagination';
 import Visible from '../../components/utils/Visible';
 import { COLUMN_HEADERS } from '../../constants/constants';
 import './UserAdmin.scss';
 
 const UserAdmin = () => {
-  const { users, isFetching, isFetched, error } = useAdminData();
+  const {
+    users,
+    isFetching,
+    isFetched,
+    error,
+    updateUser,
+    deleteUser,
+    currentPage,
+    pageChangeHandler,
+    totalPages,
+    userSelectionHandler,
+    deleteMultipleUsers,
+    selectedUsers,
+    allSelected,
+  } = useAdminData();
+
+  // const updateExistingData = useCallback((data) => {
+  //   updateUser(data);
+  // }, [updateUser]);
+
+  // const deleteExistingData = useCallback((data) => {
+  //   updateUser(data);
+  // }, [updateUser]);
 
   const columnHeaders = COLUMN_HEADERS.map((column) => {
     const columnData = {
       header: column,
     };
+
+    const renderer = (El, props) => <El {...props} />;
     if (column === '__select') {
-      columnData.renderer = <Checkbox />;
-      columnData.headerRenderer = <Checkbox />;
+      columnData.renderer = (props) =>
+        renderer(Checkbox, {
+          ...props,
+          changeHandler: userSelectionHandler,
+          selectedUsers: selectedUsers,
+        });
+      columnData.headerRenderer = (
+        <Checkbox
+          changeHandler={userSelectionHandler}
+          isAllSelection
+          isChecked={allSelected}
+        />
+      );
     } else if (column === '__actions') {
-      columnData.renderer = <UserAction />;
+      // columnData.renderer = <UserAction />;
+      columnData.renderer = (props) =>
+        renderer(UserAction, {
+          ...props,
+          updateUser,
+          deleteUser,
+        });
       columnData.headerRenderer = ' ';
     }
     return columnData;
   });
 
-  debugger;
   return (
     <>
       <Visible when={isFetching}>
@@ -36,7 +80,7 @@ const UserAdmin = () => {
       </Visible>
       <div className="UserAdmin">
         <Backdrop
-          className="CarSearch CarSearch__backdrop"
+          className="UserAdmin UserAdmin__backdrop"
           sx={{
             backgroundColor: '#00000024',
             position: 'absolute',
@@ -63,22 +107,31 @@ const UserAdmin = () => {
               </Typography>
             </Visible>
           </Visible>
-          {/* <Visible when={isFetched && !error && !users.length}>
-          No Data Found
-        </Visible>
-        <Visible when={isFetched && !error && !!users.length}>
-          <Table rowData={ROWDATA} tableData={users} />
-        </Visible>
-        <Visible when={isFetched && !!error}>
-          <Typography
-            variant="h5"
-            align="center"
-            component="h5"
-            className="UserAdmin__error"
+          <Stack
+            className="UserAdmin__pagination"
+            spacing={2}
+            direction="row"
+            justifyContent="space-between"
           >
-            {error}
-          </Typography>
-        </Visible> */}
+            <div>
+              <Visible when={!!selectedUsers.length}>
+                <Button
+                  variant="contained"
+                  endIcon={<DeleteIcon />}
+                  onClick={deleteMultipleUsers}
+                >
+                  Delete Selected
+                </Button>
+              </Visible>
+            </div>
+            <Visible when={!!totalPages}>
+              <Pagination
+                totalPages={totalPages}
+                currentPage={currentPage}
+                onPageChange={pageChangeHandler}
+              />
+            </Visible>
+          </Stack>
         </Card>
       </div>
     </>

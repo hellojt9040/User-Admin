@@ -1,17 +1,69 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import IconButton from '@mui/material/IconButton';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Modal from '../UI/Modal';
+import Visible from '../utils/Visible';
+import EditUser from '../EditUser';
+import DeleteUser from '../DeleteUser';
 
-const UserAction = () => {
+const UserAction = ({ rowData, updateUser, deleteUser }) => {
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const openEditModalHandler = () => {
+    setShowEditModal(true);
+  };
+
+  const closeEditModalHandler = () => {
+    setShowEditModal(false);
+  };
+
+  const openDeleteModalHandler = () => {
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModalHandler = () => {
+    setShowDeleteModal(false);
+  };
+
   return (
     <ButtonGroup variant="text" aria-label="text button group">
-      <IconButton aria-label="delete">
+      {/* Edit  */}
+      <Visible when={showEditModal}>
+        <Modal
+          title="Edit User"
+          open={showEditModal}
+          handleClose={closeEditModalHandler}
+        >
+          <EditUser
+            userData={rowData}
+            updateUser={updateUser}
+            closeEditModalHandler={closeEditModalHandler}
+          />
+        </Modal>
+      </Visible>
+      {/* Delete */}
+      <Visible when={showDeleteModal}>
+        <Modal
+          title="Delete User"
+          open={showDeleteModal}
+          handleClose={closeDeleteModalHandler}
+        >
+          <DeleteUser
+            userData={rowData}
+            deleteUser={deleteUser}
+            closeDeleteModalHandler={closeDeleteModalHandler}
+          />
+        </Modal>
+      </Visible>
+
+      <IconButton aria-label="delete" onClick={openEditModalHandler}>
         <ModeEditIcon />
       </IconButton>
-      <IconButton aria-label="delete">
+      <IconButton aria-label="delete" onClick={openDeleteModalHandler}>
         <DeleteIcon />
       </IconButton>
     </ButtonGroup>
